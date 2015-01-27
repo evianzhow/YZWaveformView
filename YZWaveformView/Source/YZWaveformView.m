@@ -109,7 +109,7 @@
                     break;
             
                 case 1:
-                    y = ellipse - scaling * ((self.phase) * sinf(2 * M_PI * x / width + 3/2 * M_PI) + (1 - self.phase) * sinf(3 * M_PI * x/width + 3/2 * M_PI));
+                    y = ellipse - scaling * ((1 - self.phase) * sinf(2 * M_PI * x / width + 3/2 * M_PI) + (self.phase) * sinf(3 * M_PI * x/width + 3/2 * M_PI));
                     break;
                     
                 default:
@@ -136,11 +136,11 @@
 {
     switch (idx) {
         case 0:
-            return [UIColor redColor];
+            return [UIColor colorWithRed:1.0f green:0 blue:0 alpha:0.9f]; // red
         case 1:
-            return [UIColor greenColor];
+            return [UIColor colorWithRed:0 green:1.0f blue:0 alpha:0.9f]; // green
         default:
-            return [UIColor blueColor];
+            return [UIColor colorWithRed:0 green:0 blue:1.0f alpha:0.9f]; // blue
     }
 }
 
