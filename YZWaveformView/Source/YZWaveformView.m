@@ -18,6 +18,10 @@
 
 @implementation YZWaveformView
 
+#pragma mark - Getter and setter methods
+
+
+#pragma mark - Init methods
 - (id)init
 {
     if(self = [super init]) {
@@ -44,28 +48,17 @@
 - (void)setup
 {
     self.frequency = 1.5f;
-    
-    self.amplitude = 1.0f;
+	
     self.idleAmplitude = 0.01f;
-    
+	self.amplitude = 1.0f;
+	
     self.numberOfWaves = 3;
     self.phase = 0.0f;
     self.phaseShift = 0.05f;
     self.density = 5.0f;
 }
 
--(void)updateWithLevel:(CGFloat)level
-{
-    if (self.phase <= -1.0f)
-        self.phaseShift = 0.05f;
-    else if (self.phase >= 1.0f)
-        self.phaseShift = -0.05f;
-    self.phase += self.phaseShift;
-    self.amplitude = fmax( level, self.idleAmplitude);
-    
-    [self setNeedsDisplay];
-}
-
+#pragma mark - Drawing methods
 // Thanks to Raffael Hannemann https://github.com/raffael/SISinusWaveView
 - (void)drawRect:(CGRect)rect
 {
@@ -90,9 +83,9 @@
         CGFloat halfHeight = CGRectGetHeight(self.bounds) / 2.0f;
         CGFloat width = CGRectGetWidth(self.bounds);
         CGFloat mid = width / 2.0f;
-        
-        const CGFloat maxAmplitude = halfHeight - 4.0f; // 4 corresponds to twice the stroke width
-        
+		
+		const CGFloat maxAmplitude = halfHeight - 4.0f; // 4 corresponds to twice the stroke width
+		
         CGContextSetFillColorWithColor(context, [self fillColorAtIndex:i].CGColor);
         
         for(CGFloat x = 0; x<width + self.density; x += self.density) {
@@ -117,7 +110,7 @@
                     break;
             }
             
-            y = - y * self.amplitude * maxAmplitude + halfHeight;
+			y = - y * self.amplitude * maxAmplitude + halfHeight;
             
             if (x==0) {
                 CGContextMoveToPoint(context, x, y);
@@ -134,14 +127,24 @@
 
 - (UIColor *)fillColorAtIndex:(NSUInteger)idx
 {
-    switch (idx) {
-        case 0:
-            return [UIColor colorWithRed:1.0f green:0 blue:0 alpha:0.9f]; // red
-        case 1:
-            return [UIColor colorWithRed:0 green:1.0f blue:0 alpha:0.9f]; // green
-        default:
-            return [UIColor colorWithRed:0 green:0 blue:1.0f alpha:0.9f]; // blue
-    }
+	CGFloat hue = ( ((CGFloat)(idx % 3))*120.0 ) / 360.0;
+	// 0 or 360 degrees = red; 120 degrees = green; 240 degrees = blue;
+	
+	return [UIColor colorWithHue:hue saturation:1.0 brightness:1.0 alpha:0.9];
+}
+
+#pragma mark - Main methods
+-(void)updateWithLevel:(CGFloat)level
+{
+	if (self.phase <= -1.0f)
+		self.phaseShift = 0.05f;
+	else if (self.phase >= 1.0f)
+		self.phaseShift = -0.05f;
+	self.phase += self.phaseShift;
+	
+	self.amplitude = level;
+	
+	[self setNeedsDisplay];
 }
 
 @end
